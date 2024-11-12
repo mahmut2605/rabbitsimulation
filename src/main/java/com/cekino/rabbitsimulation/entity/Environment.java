@@ -38,7 +38,7 @@ public class Environment {
         }
 
         if (random.nextDouble() < 0.1) { // 10% chance of a disease outbreak
-            healthFactor -= 5;
+            healthFactor -= 5 * (1 / bunny.getMutationRate());
         }
 
         bunny.adjustHealth(healthFactor);
