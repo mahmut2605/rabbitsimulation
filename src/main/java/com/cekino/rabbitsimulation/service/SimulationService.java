@@ -69,7 +69,7 @@ public class SimulationService {
         }
     }
 
-    @Transactional
+//    @Transactional
     public void runYearlyCycle() {
         List<Bunny> newBunnies = new ArrayList<>();
         List<Bunny> deadBunnies = new ArrayList<>();
@@ -108,9 +108,7 @@ public class SimulationService {
         simulationRepository.save(yearlySimulation);
     }
 
-    public int getCurrentPopulation() {
-        return bunnies.size();
-    }
+
 
     public int getCurrentAlivePopulation() {
         return bunnies.stream()
@@ -118,22 +116,25 @@ public class SimulationService {
                 .collect(Collectors.toList()).size(); // sonucu liste olarak toplar
     }
 
-
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setEnvironmentParameters(int carryingCapacity) {
-        environment.setCarryingCapacity(carryingCapacity);
-        environmentRepository.save(environment);
-    }
-
-    public void setBunnyParameters(double reproductionRate, double mutationRate) {
-        bunnies.forEach(bunny -> {
-            bunny.setReproductionRate(reproductionRate);
-            bunny.setMutationRate(mutationRate);
-            bunnyRepository.save(bunny);
-        });
-    }
+//
+//    public int getCurrentPopulation() {
+//        return bunnies.size();
+//    }
+//
+//    public int getYear() {
+//        return year;
+//    }
+//
+//    public void setEnvironmentParameters(int carryingCapacity) {
+//        environment.setCarryingCapacity(carryingCapacity);
+//        environmentRepository.save(environment);
+//    }
+//
+//    public void setBunnyParameters(double reproductionRate, double mutationRate) {
+//        bunnies.forEach(bunny -> {
+//            bunny.setReproductionRate(reproductionRate);
+//            bunny.setMutationRate(mutationRate);
+//            bunnyRepository.save(bunny);
+//        });
+//    }
 }
