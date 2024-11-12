@@ -82,7 +82,8 @@ public class SimulationService {
 //            environment.applyEnvironmentalFactors(bunny, getCurrentAlivePopulation());
 
             if (!bunny.isAlive()) {
-                bunnyRepository.save(bunny); // Mark the bunny as updated in the database
+                bunnyRepository.save(bunny);
+                deadBunnies.add(bunny);
             } else {
                 bunny.age();
                 environment.applyEnvironmentalFactors(bunny, getCurrentAlivePopulation());

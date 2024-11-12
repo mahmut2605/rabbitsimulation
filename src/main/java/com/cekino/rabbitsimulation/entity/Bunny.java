@@ -42,7 +42,15 @@ public class Bunny {
     }
 
     public boolean canReproduce() {
-        return this.age >= 2 && this.alive && this.health > 50.0;
+        return this.age >= 2 && this.alive && this.health > 50.0 &&  suitableMutationAndAgeforReproduce();
+    }
+
+    private boolean suitableMutationAndAgeforReproduce(){
+        if ( (1 / this.getMutationRate()) * this.age >10 ){
+            return true;
+        }
+
+        return  false;
     }
 
     public Bunny reproduce() {
@@ -57,7 +65,7 @@ public class Bunny {
     }
 
     public void adjustHealth(double factor) {
-        this.health *= factor;
+        this.health += factor;
         if (this.health < 0)
             this.health = 0;
         else if (this.health >=100) {

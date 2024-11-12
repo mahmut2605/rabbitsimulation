@@ -26,18 +26,19 @@ public class Environment {
     }
 
     public void applyEnvironmentalFactors(Bunny bunny, int currentPopulation) {
-        double healthFactor = 1.0;
+        double healthFactor = 0;
+
 
         if (currentPopulation > carryingCapacity) {
-            healthFactor -= 0.05 * ((double) currentPopulation / carryingCapacity);
+            healthFactor =  -1 * (((double) (currentPopulation / carryingCapacity) * 10) + (1 / bunny.getMutationRate()));
         }
 
         if (currentPopulation < carryingCapacity) {
-            healthFactor += 0.75 * ((double) carryingCapacity / (currentPopulation + 10 ) ); //currentPopulation+10 to prevent zero divider problem
+            healthFactor =  (((double) currentPopulation / carryingCapacity) * (1 / bunny.getMutationRate())) + 5;
         }
 
         if (random.nextDouble() < 0.1) { // 10% chance of a disease outbreak
-            healthFactor -= 0.1;
+            healthFactor -= 5;
         }
 
         bunny.adjustHealth(healthFactor);
