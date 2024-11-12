@@ -1,4 +1,4 @@
-module-name: "odemelistesi"
+
 
 
 spring :
@@ -15,6 +15,9 @@ spring :
 
 server:
   port: 8085
+
+initial_bunny_count : 100 # başlangıçta kaç tavşan ile başlanacak
+howmany_year_similation: 10 #similasyonu kaç yıl için çalıştırılıcak
 
 
 ---

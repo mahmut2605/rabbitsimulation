@@ -58,7 +58,11 @@ public class Bunny {
 
     public void adjustHealth(double factor) {
         this.health *= factor;
-        if (this.health < 0) this.health = 0;
+        if (this.health < 0)
+            this.health = 0;
+        else if (this.health >=100) {
+            this.health=100;
+        }
     }
 
     // Getters and setters omitted for brevity

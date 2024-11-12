@@ -7,6 +7,8 @@ import com.cekino.rabbitsimulation.entity.Simulation;
 import com.cekino.rabbitsimulation.repository.BunnyRepository;
 import com.cekino.rabbitsimulation.repository.EnvironmentRepository;
 import com.cekino.rabbitsimulation.repository.SimulationRepository;
+import lombok.Value;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class SimulationService {
+
+    private int initial_bunny_count = 10;
+    private  int howmany_year_similation = 20;
     private final BunnyRepository bunnyRepository;
     private final EnvironmentRepository environmentRepository;
     private final SimulationRepository simulationRepository;
@@ -32,11 +37,13 @@ public class SimulationService {
     }
 
     private void initializeSimulation() {
+        deleteAppData();
+
         this.environment = new Environment(100);
         environmentRepository.save(environment);
 
         this.bunnies = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < initial_bunny_count; i++) {
             Bunny bunny = new Bunny(0, 1.0, 0.1);
             bunnyRepository.save(bunny);
             bunnies.add(bunny);
@@ -46,6 +53,20 @@ public class SimulationService {
         // Create a Simulation instance and save it
         Simulation initialSimulation = new Simulation(environment.getCarryingCapacity(), bunnies.size(), year);
         simulationRepository.save(initialSimulation);
+
+        run();
+    }
+
+
+    private void deleteAppData(){
+        bunnyRepository.deleteAll();
+        environmentRepository.deleteAll();
+        simulationRepository.deleteAll();
+    }
+    private void run(){
+        for (int i = 0; i<howmany_year_similation; i++){
+            runYearlyCycle();
+        }
     }
 
     @Transactional
@@ -89,15 +110,6 @@ public class SimulationService {
     }
 
     public int getCurrentAlivePopulation() {
-//        List<Bunny> aliveBunnies = new ArrayList<>();
-//        Iterator<Bunny> iterator = bunnies.iterator();
-//        while (iterator.hasNext()) {
-//            Bunny bunny = iterator.next();
-//            if (bunny.isAlive()) {
-//                aliveBunnies.add(bunny);
-//            } }
-//        return aliveBunnies.size();
-
         return bunnies.stream()
                 .filter(Bunny::isAlive) // sadece alive = true olanları alır
                 .collect(Collectors.toList()).size(); // sonucu liste olarak toplar
