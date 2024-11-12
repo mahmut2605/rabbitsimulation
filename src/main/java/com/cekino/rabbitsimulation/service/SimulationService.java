@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class SimulationService {
 
     private int initial_bunny_count = 10;
-    private  int howmany_year_similation = 20;
+    private  int howmany_year_similation = 100;
     private final BunnyRepository bunnyRepository;
     private final EnvironmentRepository environmentRepository;
     private final SimulationRepository simulationRepository;
@@ -72,6 +72,7 @@ public class SimulationService {
     @Transactional
     public void runYearlyCycle() {
         List<Bunny> newBunnies = new ArrayList<>();
+        List<Bunny> deadBunnies = new ArrayList<>();
         environment.fluctuateResources();
         environmentRepository.save(environment);
 
@@ -97,6 +98,7 @@ public class SimulationService {
             }
         }
         bunnies.addAll(newBunnies);
+        bunnies.removeAll(deadBunnies);
         bunnyRepository.saveAll(newBunnies); // Save new bunnies to the database
 
         year++;
