@@ -105,7 +105,7 @@ public class SimulationService {
         }
         bunnies.addAll(newBunnies);
         bunnies.removeAll(deadBunnies);
-        bunnyService.saveAllBunnies(newBunnies); // Save new bunnies to the database
+        bunnyService.saveAllBunnies(newBunnies);
 
         year++;
 
