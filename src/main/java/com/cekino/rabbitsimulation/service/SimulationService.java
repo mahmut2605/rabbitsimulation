@@ -7,6 +7,7 @@ import com.cekino.rabbitsimulation.entity.Simulation;
 import com.cekino.rabbitsimulation.repository.BunnyRepository;
 import com.cekino.rabbitsimulation.repository.EnvironmentRepository;
 import com.cekino.rabbitsimulation.repository.SimulationRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class SimulationService {
+
+    private final BunnyService bunnyService;
+    private final EnvironmentService environmentService;
+    private final SimulationRepository simulationRepository;
 
     @Value("${initial_bunny_count}")
     private int initialBunnyCount;
@@ -32,32 +38,21 @@ public class SimulationService {
     @Value("${initial_year}")
     private int initial_year;
 
-
-
-    private final BunnyRepository bunnyRepository;
-    private final EnvironmentRepository environmentRepository;
-    private final SimulationRepository simulationRepository;
     private List<Bunny> bunnies;
     private Environment environment;
     private int year;
-
-    public SimulationService(BunnyRepository bunnyRepository, EnvironmentRepository environmentRepository, SimulationRepository simulationRepository) {
-        this.bunnyRepository = bunnyRepository;
-        this.environmentRepository = environmentRepository;
-        this.simulationRepository = simulationRepository;
-    }
 
     public void initializeSimulation() {
         Instant start = Instant.now();
         deleteAppData();
 
         this.environment = new Environment(initial_environment_capacity);
-        environmentRepository.save(environment);
+        environmentService.saveEnvironment(environment);
 
         this.bunnies = new ArrayList<>();
         for (int i = 0; i < initialBunnyCount; i++) {
             Bunny bunny = new Bunny(0, 1.0, 0.1);
-            bunnyRepository.save(bunny);
+            bunnyService.saveBunny(bunny);
             bunnies.add(bunny);
         }
         this.year = initial_year;
@@ -78,30 +73,31 @@ public class SimulationService {
 
 
     private void deleteAppData(){
-        bunnyRepository.deleteAll();
-        environmentRepository.deleteAll();
+        bunnyService.deleteAllBunny();
+        environmentService.deleteAllEnvironment();
         simulationRepository.deleteAll();
     }
 
     public void runYearlyCycle() {
         List<Bunny> newBunnies = new ArrayList<>();
         List<Bunny> deadBunnies = new ArrayList<>();
-        environment.fluctuateResources();
-        environmentRepository.save(environment);
+        environmentService.fluctuateResources(environment);
+        environmentService.saveEnvironment(environment);
 
         Iterator<Bunny> iterator = bunnies.iterator();
         while (iterator.hasNext()) {
             Bunny bunny = iterator.next();
 
             if (!bunny.isAlive()) {
-                bunnyRepository.save(bunny);
+                bunnyService.saveBunny(bunny);
                 deadBunnies.add(bunny);
             } else {
-                bunny.age();
-                environment.applyEnvironmentalFactors(bunny, getCurrentAlivePopulation());
-                bunnyRepository.save(bunny); // Update existing bunny health and age
-                if (bunny.canReproduce()) {
-                    Bunny offspring = bunny.reproduce();
+                bunnyService.bunnyGrowUpOneYear(bunny);
+
+                environmentService.applyEnvironmentalFactors(bunny, getCurrentAlivePopulation(),environment);
+                bunnyService.saveBunny(bunny); // Update existing bunny health and age
+                if (bunnyService.canReproduce(bunny)) {
+                    Bunny offspring = bunnyService.reproduce(bunny);
                     if (offspring != null) {
                         newBunnies.add(offspring);
                     }
@@ -110,7 +106,7 @@ public class SimulationService {
         }
         bunnies.addAll(newBunnies);
         bunnies.removeAll(deadBunnies);
-        bunnyRepository.saveAll(newBunnies); // Save new bunnies to the database
+        bunnyService.saveAllBunnies(newBunnies); // Save new bunnies to the database
 
         year++;
 

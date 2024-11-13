@@ -25,21 +25,6 @@ public class Bunny {
     private double health;
     private Gender gender;
 
-    @Transient
-    @Value("${bunny_healt_rate_for_death}")
-    private int bunny_healt_rate_for_death;
-
-    @Transient
-    @Value("${bunny_reproduce_min_age_equal}")
-    private int bunny_reproduce_min_age_equal;
-
-    @Transient
-    @Value("${bunny_reproduce_min_healt_limit}")
-    private int bunny_reproduce_min_healt_limit;
-
-    @Transient
-    @Value("${bunny_min_age_for_death}")
-    private int bunny_min_age_for_death;
 
 
     public Bunny(int generation, double reproductionRate, double mutationRate) {
@@ -50,45 +35,6 @@ public class Bunny {
         this.alive = true;
         this.health = 100.0;
         this.gender = generateRandomGender();
-    }
-
-    public void age() {
-        this.age++;
-        if (this.age > bunny_min_age_for_death || this.health < bunny_healt_rate_for_death) {
-            this.alive = false;
-        }
-    }
-
-    public boolean canReproduce() {
-        return  this.gender.equals(Gender.FEMALE) && this.age >= bunny_reproduce_min_age_equal && this.alive && this.health > bunny_reproduce_min_healt_limit &&  suitableMutationAndAgeforReproduce();
-    }
-
-    private boolean suitableMutationAndAgeforReproduce(){
-        if ( (1 / this.getMutationRate()) * this.age >10 ){
-            return true;
-        }
-
-        return  false;
-    }
-
-    public Bunny reproduce() {
-        if (canReproduce()) {
-            Random random = new Random();
-
-            double newReproductionRate = reproductionRate + (mutationRate * (random.nextDouble() - 0.5));
-            double newMutationRate = mutationRate + (mutationRate * (random.nextDouble() - 0.5));
-            return new Bunny(this.generation + 1, newReproductionRate, newMutationRate);
-        }
-        return null;
-    }
-
-    public void adjustHealth(double factor) {
-        this.health += factor;
-        if (this.health < 0)
-            this.health = 0;
-        else if (this.health >=100) {
-            this.health=100;
-        }
     }
 
     private Gender generateRandomGender(){
