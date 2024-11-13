@@ -1,3 +1,13 @@
+initial_bunny_count : 10 # başlangıçta kaç tavşan ile başlanacak
+howmany_year_similation: 100 #similasyonu kaç yıl için çalıştırılıcak
+initial_environment_capacity: 100
+initial_year: 2024
+bunny_healt_rate_for_death: 20 # tavşanlar hangi sağlık oranından sonra ölmeye başlasın
+bunny_min_age_for_death: 7 # tavşanlar hangi sağlık oranından sonra ölmeye başlasın
+
+bunny_reproduce_min_age_equal: 2 # tavşanlar kaç yaşından itibaren doğum yapmaya başlasın
+bunny_reproduce_min_healt_limit: 50 # taşvanların sağlığı bu oranın üstündeyse doğum yapabilir.
+
 
 
 
@@ -15,10 +25,6 @@ spring :
 
 server:
   port: 8085
-
-initial_bunny_count : 100 # başlangıçta kaç tavşan ile başlanacak
-howmany_year_similation: 10 #similasyonu kaç yıl için çalıştırılıcak
-
 
 ---
 spring:

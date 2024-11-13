@@ -8,9 +8,7 @@ import com.cekino.rabbitsimulation.repository.BunnyRepository;
 import com.cekino.rabbitsimulation.repository.EnvironmentRepository;
 import com.cekino.rabbitsimulation.repository.SimulationRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -22,8 +20,20 @@ import java.util.stream.Collectors;
 @Service
 public class SimulationService {
 
-    private int initial_bunny_count = 10;
-    private  int howmany_year_similation = 100;
+    @Value("${initial_bunny_count}")
+    private int initialBunnyCount;
+
+    @Value("${howmany_year_similation}")
+    private int howmany_year_similation;
+
+    @Value("${initial_environment_capacity}")
+    private int initial_environment_capacity;
+
+    @Value("${initial_year}")
+    private int initial_year;
+
+
+
     private final BunnyRepository bunnyRepository;
     private final EnvironmentRepository environmentRepository;
     private final SimulationRepository simulationRepository;
@@ -31,28 +41,29 @@ public class SimulationService {
     private Environment environment;
     private int year;
 
-
     public SimulationService(BunnyRepository bunnyRepository, EnvironmentRepository environmentRepository, SimulationRepository simulationRepository) {
         this.bunnyRepository = bunnyRepository;
         this.environmentRepository = environmentRepository;
         this.simulationRepository = simulationRepository;
-        initializeSimulation();
+
     }
 
-    private void initializeSimulation() {
+    public void initializeSimulation() {
         Instant start = Instant.now();
         deleteAppData();
-        this.environment = new Environment(100);
+
+        this.environment = new Environment(initial_environment_capacity);
         environmentRepository.save(environment);
 
         this.bunnies = new ArrayList<>();
-        for (int i = 0; i < initial_bunny_count; i++) {
+        for (int i = 0; i < initialBunnyCount; i++) {
             Bunny bunny = new Bunny(0, 1.0, 0.1);
             bunnyRepository.save(bunny);
             bunnies.add(bunny);
         }
-        this.year = 2024;
+        this.year = initial_year;
 
+        // Create a Simulation instance and save it
         Simulation initialSimulation = new Simulation(environment.getCarryingCapacity(), bunnies.size(), year);
         simulationRepository.save(initialSimulation);
 
@@ -61,6 +72,7 @@ public class SimulationService {
         long timeElapsedSecond = Duration.between(start, finish).toSeconds();
 
         System.out.println("Similasyon tamamlandı. Veritabanındaki similasyon tablosuna bakabilirsiniz. Proje " + timeElapsedSecond + " saniye tamamlanmıştır." );
+
     }
 
 
@@ -75,7 +87,7 @@ public class SimulationService {
         }
     }
 
-//    @Transactional
+    //    @Transactional
     public void runYearlyCycle() {
         List<Bunny> newBunnies = new ArrayList<>();
         List<Bunny> deadBunnies = new ArrayList<>();
@@ -122,25 +134,4 @@ public class SimulationService {
                 .collect(Collectors.toList()).size(); // sonucu liste olarak toplar
     }
 
-//
-//    public int getCurrentPopulation() {
-//        return bunnies.size();
-//    }
-//
-//    public int getYear() {
-//        return year;
-//    }
-//
-//    public void setEnvironmentParameters(int carryingCapacity) {
-//        environment.setCarryingCapacity(carryingCapacity);
-//        environmentRepository.save(environment);
-//    }
-//
-//    public void setBunnyParameters(double reproductionRate, double mutationRate) {
-//        bunnies.forEach(bunny -> {
-//            bunny.setReproductionRate(reproductionRate);
-//            bunny.setMutationRate(mutationRate);
-//            bunnyRepository.save(bunny);
-//        });
-//    }
 }

@@ -1,10 +1,7 @@
 package com.cekino.rabbitsimulation.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Random;
 
@@ -33,8 +30,9 @@ public class Environment {
             healthFactor =  -1 * (((double) (currentPopulation / carryingCapacity) * 10) + (1 / bunny.getMutationRate()));
         }
 
+        // TO:DO bu formüle bak
         if (currentPopulation < carryingCapacity) {
-            healthFactor =  (((double) currentPopulation / carryingCapacity) * (1 / bunny.getMutationRate())) + 5;
+            healthFactor =  (((double) currentPopulation / carryingCapacity) * (bunny.getMutationRate() )) + 5;
         }
 
         if (random.nextDouble() < 0.1) { // 10% chance of a disease outbreak
@@ -43,6 +41,7 @@ public class Environment {
 
         bunny.adjustHealth(healthFactor);
     }
+
 
     public void fluctuateResources() {
         if (random.nextDouble() < 0.2) { // 20% chance of resource fluctuation
@@ -53,22 +52,6 @@ public class Environment {
         }
     }
 
-    // Getter and setter omitted for brevity
 
-    public int getCarryingCapacity() {
-        return carryingCapacity;
-    }
-
-    public void setCarryingCapacity(int carryingCapacity) {
-        this.carryingCapacity = carryingCapacity;
-    }
-
-    public Random getRandom() {
-        return random;
-    }
-
-    public void setRandom(Random random) {
-        this.random = random;
-    }
 }
 

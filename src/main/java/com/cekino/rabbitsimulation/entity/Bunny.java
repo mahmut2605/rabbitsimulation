@@ -2,10 +2,8 @@ package com.cekino.rabbitsimulation.entity;
 
 import com.cekino.rabbitsimulation.enums.Gender;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Random;
 
@@ -27,7 +25,21 @@ public class Bunny {
     private double health;
     private Gender gender;
 
+    @Transient
+    @Value("${bunny_healt_rate_for_death}")
+    private int bunny_healt_rate_for_death;
 
+    @Transient
+    @Value("${bunny_reproduce_min_age_equal}")
+    private int bunny_reproduce_min_age_equal;
+
+    @Transient
+    @Value("${bunny_reproduce_min_healt_limit}")
+    private int bunny_reproduce_min_healt_limit;
+
+    @Transient
+    @Value("${bunny_min_age_for_death}")
+    private int bunny_min_age_for_death;
 
 
     public Bunny(int generation, double reproductionRate, double mutationRate) {
