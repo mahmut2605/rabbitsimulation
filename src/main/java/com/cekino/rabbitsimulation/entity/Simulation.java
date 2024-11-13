@@ -5,8 +5,6 @@ import lombok.*;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
 @Table(name= "simulation")
 public class Simulation {
@@ -16,8 +14,6 @@ public class Simulation {
     private int carryingCapacity;
     private int population;
     private int year;
-
-    //public Simulation(String bunny, List<Bunny> bunnies, Environment environment) {    }
 
     public Simulation(int carryingCapacity, int population, int year) {
         this.carryingCapacity = carryingCapacity;

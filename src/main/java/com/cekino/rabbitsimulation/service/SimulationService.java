@@ -67,7 +67,10 @@ public class SimulationService {
         Simulation initialSimulation = new Simulation(environment.getCarryingCapacity(), bunnies.size(), year);
         simulationRepository.save(initialSimulation);
 
-        run();
+        for (int i = 0; i<howmany_year_similation; i++){
+            runYearlyCycle();
+        }
+
         Instant finish = Instant.now();
         long timeElapsedSecond = Duration.between(start, finish).toSeconds();
 
@@ -81,13 +84,7 @@ public class SimulationService {
         environmentRepository.deleteAll();
         simulationRepository.deleteAll();
     }
-    private void run(){
-        for (int i = 0; i<howmany_year_similation; i++){
-            runYearlyCycle();
-        }
-    }
 
-    //    @Transactional
     public void runYearlyCycle() {
         List<Bunny> newBunnies = new ArrayList<>();
         List<Bunny> deadBunnies = new ArrayList<>();
@@ -97,8 +94,6 @@ public class SimulationService {
         Iterator<Bunny> iterator = bunnies.iterator();
         while (iterator.hasNext()) {
             Bunny bunny = iterator.next();
-//            bunny.age();
-//            environment.applyEnvironmentalFactors(bunny, getCurrentAlivePopulation());
 
             if (!bunny.isAlive()) {
                 bunnyRepository.save(bunny);
@@ -121,7 +116,6 @@ public class SimulationService {
 
         year++;
 
-        // Create a new Simulation instance with the updated population and save it
         Simulation yearlySimulation = new Simulation(environment.getCarryingCapacity(), getCurrentAlivePopulation(), year);
         simulationRepository.save(yearlySimulation);
     }
@@ -130,8 +124,8 @@ public class SimulationService {
 
     public int getCurrentAlivePopulation() {
         return bunnies.stream()
-                .filter(Bunny::isAlive) // sadece alive = true olanları alır
-                .collect(Collectors.toList()).size(); // sonucu liste olarak toplar
+                .filter(Bunny::isAlive)
+                .collect(Collectors.toList()).size();
     }
 
 }
