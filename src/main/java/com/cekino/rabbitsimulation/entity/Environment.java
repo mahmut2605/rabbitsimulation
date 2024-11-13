@@ -16,8 +16,6 @@ public class Environment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int carryingCapacity;
-    private Random random = new Random();
-
     public Environment(int initialCapacity) {
         this.carryingCapacity = initialCapacity;
     }

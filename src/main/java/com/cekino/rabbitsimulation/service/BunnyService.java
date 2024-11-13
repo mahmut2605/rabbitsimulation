@@ -1,6 +1,7 @@
 package com.cekino.rabbitsimulation.service;
 
 import com.cekino.rabbitsimulation.entity.Bunny;
+import com.cekino.rabbitsimulation.entity.Environment;
 import com.cekino.rabbitsimulation.enums.Gender;
 import com.cekino.rabbitsimulation.repository.BunnyRepository;
 import jakarta.persistence.Transient;
@@ -29,6 +30,10 @@ public class BunnyService {
     @Value("${bunny_min_age_for_death}")
     private int bunny_min_age_for_death;
 
+
+    public Bunny getBunny(){
+        return  new Bunny(0, 1.0, 0.1);
+    }
 
     public void bunnyGrowUpOneYear(Bunny bunny) {
         bunny.setAge(bunny.getAge() + 1);

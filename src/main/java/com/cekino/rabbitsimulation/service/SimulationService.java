@@ -32,9 +32,6 @@ public class SimulationService {
     @Value("${howmany_year_similation}")
     private int howmany_year_similation;
 
-    @Value("${initial_environment_capacity}")
-    private int initial_environment_capacity;
-
     @Value("${initial_year}")
     private int initial_year;
 
@@ -44,21 +41,20 @@ public class SimulationService {
 
     public void initializeSimulation() {
         Instant start = Instant.now();
+        this.year = initial_year;
         deleteAppData();
 
-        this.environment = new Environment(initial_environment_capacity);
+        environment = environmentService.getEnvironment();
         environmentService.saveEnvironment(environment);
 
         this.bunnies = new ArrayList<>();
         for (int i = 0; i < initialBunnyCount; i++) {
-            Bunny bunny = new Bunny(0, 1.0, 0.1);
+            Bunny bunny = bunnyService.getBunny();
             bunnyService.saveBunny(bunny);
             bunnies.add(bunny);
         }
-        this.year = initial_year;
 
-        Simulation initialSimulation = new Simulation(environment.getCarryingCapacity(), bunnies.size(), year);
-        simulationRepository.save(initialSimulation);
+        simulationRepository.save(getSimulation(environment.getCarryingCapacity(), bunnies.size(), year));
 
         for (int i = 0; i<howmany_year_similation; i++){
             runYearlyCycle();
@@ -71,6 +67,9 @@ public class SimulationService {
 
     }
 
+    private Simulation getSimulation(int carryingCapacity, int population, int year){
+        return new Simulation(carryingCapacity, population, year);
+    }
 
     private void deleteAppData(){
         bunnyService.deleteAllBunny();
@@ -95,7 +94,7 @@ public class SimulationService {
                 bunnyService.bunnyGrowUpOneYear(bunny);
 
                 environmentService.applyEnvironmentalFactors(bunny, getCurrentAlivePopulation(),environment);
-                bunnyService.saveBunny(bunny); // Update existing bunny health and age
+                bunnyService.saveBunny(bunny);
                 if (bunnyService.canReproduce(bunny)) {
                     Bunny offspring = bunnyService.reproduce(bunny);
                     if (offspring != null) {
@@ -110,8 +109,7 @@ public class SimulationService {
 
         year++;
 
-        Simulation yearlySimulation = new Simulation(environment.getCarryingCapacity(), getCurrentAlivePopulation(), year);
-        simulationRepository.save(yearlySimulation);
+        simulationRepository.save(getSimulation(environment.getCarryingCapacity(), getCurrentAlivePopulation(), year));
     }
 
     public int getCurrentAlivePopulation() {
