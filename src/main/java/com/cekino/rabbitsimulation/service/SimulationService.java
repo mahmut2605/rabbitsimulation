@@ -45,7 +45,6 @@ public class SimulationService {
         this.bunnyRepository = bunnyRepository;
         this.environmentRepository = environmentRepository;
         this.simulationRepository = simulationRepository;
-
     }
 
     public void initializeSimulation() {
@@ -63,7 +62,6 @@ public class SimulationService {
         }
         this.year = initial_year;
 
-        // Create a Simulation instance and save it
         Simulation initialSimulation = new Simulation(environment.getCarryingCapacity(), bunnies.size(), year);
         simulationRepository.save(initialSimulation);
 
@@ -119,8 +117,6 @@ public class SimulationService {
         Simulation yearlySimulation = new Simulation(environment.getCarryingCapacity(), getCurrentAlivePopulation(), year);
         simulationRepository.save(yearlySimulation);
     }
-
-
 
     public int getCurrentAlivePopulation() {
         return bunnies.stream()

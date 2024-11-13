@@ -35,7 +35,7 @@ public class Environment {
             healthFactor =  (((double) currentPopulation / carryingCapacity) * (bunny.getMutationRate() )) + 5;
         }
 
-        if (random.nextDouble() < 0.1) { // 10% chance of a disease outbreak
+        if (random.nextDouble() < 0.1) { // %10 ihtimalle hastalık gibi durum olabilir ve hayvanın sağlığı ekstra düşebilir
             healthFactor -= 5 * (1 / bunny.getMutationRate());
         }
 
@@ -43,9 +43,9 @@ public class Environment {
     }
 
 
-    public void fluctuateResources() {
-        if (random.nextDouble() < 0.2) { // 20% chance of resource fluctuation
-            this.carryingCapacity += random.nextInt(20) - 10; // Increase or decrease carrying capacity by up to 10
+    public void fluctuateResources() { // ortam kapasitesini dalgalandırıyorum artıp azalabilir
+        if (random.nextDouble() < 0.2) {
+            this.carryingCapacity += random.nextInt(20) - 10;
             if (this.carryingCapacity < 0) {
                 this.carryingCapacity = 0;
             }

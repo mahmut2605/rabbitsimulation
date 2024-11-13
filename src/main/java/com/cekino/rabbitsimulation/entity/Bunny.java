@@ -54,13 +54,13 @@ public class Bunny {
 
     public void age() {
         this.age++;
-        if (this.age > 7 || this.health < 20.0) { // Bunnies die after 7 years or if health is too low
+        if (this.age > bunny_min_age_for_death || this.health < bunny_healt_rate_for_death) {
             this.alive = false;
         }
     }
 
     public boolean canReproduce() {
-        return  this.gender.equals(Gender.FEMALE) && this.age >= 2 && this.alive && this.health > 50.0 &&  suitableMutationAndAgeforReproduce();
+        return  this.gender.equals(Gender.FEMALE) && this.age >= bunny_reproduce_min_age_equal && this.alive && this.health > bunny_reproduce_min_healt_limit &&  suitableMutationAndAgeforReproduce();
     }
 
     private boolean suitableMutationAndAgeforReproduce(){
@@ -74,7 +74,7 @@ public class Bunny {
     public Bunny reproduce() {
         if (canReproduce()) {
             Random random = new Random();
-            // Mutation could affect reproduction rate and mutation rate of offspring
+
             double newReproductionRate = reproductionRate + (mutationRate * (random.nextDouble() - 0.5));
             double newMutationRate = mutationRate + (mutationRate * (random.nextDouble() - 0.5));
             return new Bunny(this.generation + 1, newReproductionRate, newMutationRate);
