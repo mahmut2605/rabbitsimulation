@@ -7,11 +7,13 @@ import com.cekino.rabbitsimulation.entity.Simulation;
 import com.cekino.rabbitsimulation.repository.BunnyRepository;
 import com.cekino.rabbitsimulation.repository.EnvironmentRepository;
 import com.cekino.rabbitsimulation.repository.SimulationRepository;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +31,7 @@ public class SimulationService {
     private Environment environment;
     private int year;
 
+
     public SimulationService(BunnyRepository bunnyRepository, EnvironmentRepository environmentRepository, SimulationRepository simulationRepository) {
         this.bunnyRepository = bunnyRepository;
         this.environmentRepository = environmentRepository;
@@ -37,8 +40,8 @@ public class SimulationService {
     }
 
     private void initializeSimulation() {
+        Instant start = Instant.now();
         deleteAppData();
-
         this.environment = new Environment(100);
         environmentRepository.save(environment);
 
@@ -50,11 +53,14 @@ public class SimulationService {
         }
         this.year = 2024;
 
-        // Create a Simulation instance and save it
         Simulation initialSimulation = new Simulation(environment.getCarryingCapacity(), bunnies.size(), year);
         simulationRepository.save(initialSimulation);
 
         run();
+        Instant finish = Instant.now();
+        long timeElapsedSecond = Duration.between(start, finish).toSeconds();
+
+        System.out.println("Similasyon tamamlandı. Veritabanındaki similasyon tablosuna bakabilirsiniz. Proje " + timeElapsedSecond + " saniye tamamlanmıştır." );
     }
 
 

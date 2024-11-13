@@ -1,5 +1,6 @@
 package com.cekino.rabbitsimulation.entity;
 
+import com.cekino.rabbitsimulation.enums.Gender;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,10 @@ public class Bunny {
     private double mutationRate;
     private boolean alive;
     private double health;
+    private Gender gender;
+
+
+
 
     public Bunny(int generation, double reproductionRate, double mutationRate) {
         this.age = 0;
@@ -32,6 +37,7 @@ public class Bunny {
         this.mutationRate = mutationRate;
         this.alive = true;
         this.health = 100.0;
+        this.gender = generateRandomGender();
     }
 
     public void age() {
@@ -42,7 +48,7 @@ public class Bunny {
     }
 
     public boolean canReproduce() {
-        return this.age >= 2 && this.alive && this.health > 50.0 &&  suitableMutationAndAgeforReproduce();
+        return  this.gender.equals(Gender.FEMALE) && this.age >= 2 && this.alive && this.health > 50.0 &&  suitableMutationAndAgeforReproduce();
     }
 
     private boolean suitableMutationAndAgeforReproduce(){
@@ -73,53 +79,13 @@ public class Bunny {
         }
     }
 
-    // Getters and setters omitted for brevity
+    private Gender generateRandomGender(){
+        Random random = new Random();
+        int number= random.nextInt(2);;
 
-    public int getAge() {
-        return age;
+        if (number == 0 )
+            return Gender.FEMALE;
+        return Gender.MALE;
     }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public int getGeneration() {
-        return generation;
-    }
-
-    public void setGeneration(int generation) {
-        this.generation = generation;
-    }
-
-    public double getReproductionRate() {
-        return reproductionRate;
-    }
-
-    public void setReproductionRate(double reproductionRate) {
-        this.reproductionRate = reproductionRate;
-    }
-
-    public double getMutationRate() {
-        return mutationRate;
-    }
-
-    public void setMutationRate(double mutationRate) {
-        this.mutationRate = mutationRate;
-    }
-
-    public boolean isAlive() {
-        return alive;
-    }
-
-    public void setAlive(boolean alive) {
-        this.alive = alive;
-    }
-
-    public double getHealth() {
-        return health;
-    }
-
-    public void setHealth(double health) {
-        this.health = health;
-    }
 }
